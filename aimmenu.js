@@ -1,3 +1,17 @@
+
+// Инициализация меню
+const menu = document.querySelector('.aimmenu');
+if (!menu) {
+    console.error('Меню с классом .aimmenu не найдено');
+} else {
+    aimmenu(menu, {
+        activate: activateSubmenu,
+        deactivate: deactivateSubmenu,
+        submenuDirection: 'right',
+        exitMenu: () => true
+    });
+}
+
 function aimmenu(menuElement, opts) {
     const options = Object.assign({
         rowSelector: '.has-sub',
@@ -158,20 +172,6 @@ function aimmenu(menuElement, opts) {
     document.addEventListener('mousemove', mousemoveDocument);
 }
 
-// Инициализация меню
-const menu = document.querySelector('.aimmenu');
-if (!menu) {
-    console.error('Меню с классом .aimmenu не найдено');
-} else {
-    aimmenu(menu, {
-        activate: activateSubmenu,
-        deactivate: deactivateSubmenu,
-        submenuDirection: 'right',
-        exitMenu: () => true
-    });
-}
-
-// Функции активации/деактивации подменю
 // Функция активации подменю (с минимальной высотой)
 function activateSubmenu(row) {
     const submenu = row.querySelector('.is-sub');
