@@ -18,6 +18,14 @@ function aimmenu(menuElement, opts) {
     const MOUSE_LOCS_TRACKED = 3;
     const DELAY = 300;
 
+    // Закрыть меню при нажатии Escape
+    function handleKeyDown(e) {
+        if (e.key === 'Escape' && activeRow) {
+            options.deactivate(activeRow);
+            activeRow = null;
+        }
+    }
+
     function mousemoveDocument(e) {
         mouseLocs.push({ x: e.pageX, y: e.pageY });
         if (mouseLocs.length > MOUSE_LOCS_TRACKED) {
@@ -136,7 +144,9 @@ function aimmenu(menuElement, opts) {
         return 0;
     }
 
+    // Инициализация слушателей
     menuElement.addEventListener('mouseleave', mouseleaveMenu);
+    document.addEventListener('keydown', handleKeyDown); // Добавлено!
 
     const rows = menuElement.querySelectorAll(options.rowSelector);
     rows.forEach(row => {
@@ -148,10 +158,10 @@ function aimmenu(menuElement, opts) {
     document.addEventListener('mousemove', mousemoveDocument);
 }
 
-// Инициализация
-const menu = document.querySelector('.smart-menu');
+// Инициализация меню
+const menu = document.querySelector('.aimmenu');
 if (!menu) {
-    console.error('Меню с классом .smart-menu не найдено');
+    console.error('Меню с классом .aimmenu не найдено');
 } else {
     aimmenu(menu, {
         activate: activateSubmenu,
@@ -161,25 +171,37 @@ if (!menu) {
     });
 }
 
-// Функция активации
+// Функции активации/деактивации подменю
+// Функция активации подменю (с минимальной высотой)
 function activateSubmenu(row) {
     const submenu = row.querySelector('.is-sub');
     if (!submenu) return;
 
-    const menu = document.querySelector('.smart-menu');
-    const height = menu.offsetHeight;
-    const width = menu.offsetWidth;
+    const menu = document.querySelector('.aimmenu');
+    const menuHeight = menu.offsetHeight; // Полная высота меню
+    const menuWidth = menu.offsetWidth;
 
+    // Получаем вычисленные стили (учитываем padding и border)
+    const menuStyles = window.getComputedStyle(menu);
+    const menuPaddingTop = parseFloat(menuStyles.paddingTop);
+    const menuPaddingBottom = parseFloat(menuStyles.paddingBottom);
+    const menuBorderTop = parseFloat(menuStyles.borderTopWidth);
+    const menuBorderBottom = parseFloat(menuStyles.borderBottomWidth);
+
+    // Вычисляем "внутреннюю" высоту (без padding и border)
+    const innerMenuHeight = menuHeight - menuPaddingTop - menuPaddingBottom - menuBorderTop - menuBorderBottom;
+
+    // Устанавливаем подменю минимальную высоту = высоте меню
     submenu.style.display = 'block';
+    submenu.style.minHeight = `${innerMenuHeight}px`; // Ключевое изменение!
     submenu.style.top = '-1px';
-    submenu.style.left = `${width - 3}px`;
-    submenu.style.height = `${height - 4}px`;
+    submenu.style.left = `${menuWidth - 3}px`;
 
+    // Добавляем класс для подсветки
     const link = row.querySelector('a');
     if (link) link.classList.add('maintainHover');
 }
 
-// Функция деактивации
 function deactivateSubmenu(row) {
     const submenu = row.querySelector('.is-sub');
     if (submenu) submenu.style.display = 'none';
@@ -188,8 +210,8 @@ function deactivateSubmenu(row) {
     if (link) link.classList.remove('maintainHover');
 }
 
-// Остановка всплытия кликов
-document.querySelectorAll('.smart-menu .has-sub').forEach(li => {
+// Отмена всплытия кликов
+document.querySelectorAll('.aimmenu .has-sub').forEach(li => {
     li.addEventListener('click', (e) => {
         e.stopPropagation();
     });
