@@ -3,7 +3,7 @@
 **Легковесный JavaScript-скрипт** для создания адаптивных меню без jQuery.  
 Анализирует движение курсора, чтобы предотвратить случайные открытия подменю.  
 
-[![Demo](https://img.shields.io/badge/🟣-Live_Demo-8A2BE2)](https://ваш-демо-сайт.ру) 
+[![Demo](https://img.shields.io/badge/🟣-Live_Demo-8A2BE2)](http://ivankrivenko.github.io/aimmenu/example.html) 
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)  
 
 ![AimMenu Preview](preview.gif) *(Пример работы: меню реагирует на направление мыши)*  
